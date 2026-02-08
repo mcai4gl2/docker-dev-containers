@@ -346,6 +346,7 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "lint": "eslint src --ext ts",
+    "package": "vsce package --no-dependencies",
     "test:unit": "TS_NODE_PROJECT=tsconfig.test.json mocha",
     "test": "npm run test:unit"
   },
@@ -355,6 +356,7 @@
     "@types/vscode": "^1.85.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
+    "@vscode/vsce": "^3.7.1",
     "eslint": "^8.56.0",
     "mocha": "^11.7.5",
     "ts-node": "^10.9.2",

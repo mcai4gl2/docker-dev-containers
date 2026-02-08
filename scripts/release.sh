@@ -2,13 +2,13 @@
 set -euo pipefail
 
 # Usage: ./scripts/release.sh <version>
-# Example: ./scripts/release.sh 0.2.0
+# Example: ./scripts/release.sh 0.4.0
 #
 # This script will:
 #   1. Validate the version format
 #   2. Check for a clean git working tree
 #   3. Update the version in package.json
-#   4. Run lint, type check, and build
+#   4. Run lint, type check, tests, and build
 #   5. Package the VSIX
 #   6. Commit the version bump
 #   7. Create a git tag (v<version>)
@@ -19,7 +19,7 @@ VERSION="${1:-}"
 
 if [ -z "$VERSION" ]; then
   echo "Usage: $0 <version>"
-  echo "Example: $0 0.2.0"
+  echo "Example: $0 0.4.0"
   exit 1
 fi
 
@@ -44,12 +44,6 @@ if git rev-parse "$TAG" >/dev/null 2>&1; then
   exit 1
 fi
 
-# Check vsce is available
-if ! command -v vsce >/dev/null 2>&1; then
-  echo "Error: vsce is not installed. Run: npm install -g @vscode/vsce"
-  exit 1
-fi
-
 echo "=== Releasing $TAG ==="
 echo ""
 
@@ -65,18 +59,18 @@ npm ci
 echo "--- Linting ---"
 npm run lint
 
-# Step 4: Type check
+# Step 4: Type check & build
 echo "--- Type checking ---"
 npx tsc --noEmit
 
-# Step 5: Production build
-echo "--- Building ---"
-npm run package
+# Step 5: Unit tests
+echo "--- Running tests ---"
+npm run test
 
-# Step 6: Package VSIX
+# Step 6: Package VSIX (this also runs vscode:prepublish -> compile)
 echo "--- Packaging VSIX ---"
-vsce package --no-dependencies
-VSIX_FILE="jupyter-kernel-manager-${VERSION}.vsix"
+npx @vscode/vsce package --no-dependencies
+VSIX_FILE="devdocker-${VERSION}.vsix"
 if [ ! -f "$VSIX_FILE" ]; then
   echo "Error: Expected VSIX file not found: $VSIX_FILE"
   exit 1
@@ -94,7 +88,7 @@ git tag -a "$TAG" -m "Release $VERSION"
 
 # Step 9: Publish to marketplace
 echo "--- Publishing to VS Code Marketplace ---"
-vsce publish --no-dependencies
+npx @vscode/vsce publish --no-dependencies
 echo "Published $VERSION to marketplace."
 
 # Step 10: Push commit and tag
@@ -105,5 +99,5 @@ git push origin "$TAG"
 echo ""
 echo "=== Release $TAG complete ==="
 echo "  VSIX: $VSIX_FILE"
-echo "  Marketplace: https://marketplace.visualstudio.com/items?itemName=mcai4gl2.jupyter-kernel-manager"
+echo "  Marketplace: https://marketplace.visualstudio.com/items?itemName=mcai4gl2.devdocker"
 echo "  Tag: $TAG"

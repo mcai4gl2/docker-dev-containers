@@ -2,3 +2,4 @@ out/
 node_modules/
 .vscode-test/
 *.vsix
+.geo_protected_config.json

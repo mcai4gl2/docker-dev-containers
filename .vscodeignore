@@ -3,7 +3,15 @@
 src/**
 node_modules/**
 test/**
+scripts/**
+.github/**
 **/*.ts
 **/*.map
 .gitignore
+.mocharc.yml
+.eslintrc.json
+.geo_protected_config.json
 tsconfig.json
+tsconfig.test.json
+TESTING_AND_PUBLISH.md
+out-test/**
