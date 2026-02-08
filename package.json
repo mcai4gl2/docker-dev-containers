@@ -3,7 +3,12 @@
   "displayName": "DevDocker - Docker Development Tools",
   "description": "Define, build, and run Docker-based development tool containers directly from VS Code. Drop a Dockerfile, add a devdocker.json, and go.",
   "version": "0.3.0",
-  "publisher": "devdocker",
+  "publisher": "mcai4gl2",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mcai4gl2/docker-dev-containers"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
