@@ -1,0 +1,33 @@
+{
+  "id": "devdocker",
+  "version": "0.1.0",
+  "name": "DevDocker - Docker-from-Docker Support",
+  "description": "Configures the devcontainer for DevDocker extension: sets HOST_WORKSPACE_FOLDER, ensures Docker CLI and socket are available.",
+  "documentationURL": "https://github.com/devdocker/devdocker",
+  "options": {
+    "installDockerCli": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install Docker CLI if not already present"
+    },
+    "mountDockerSocket": {
+      "type": "boolean",
+      "default": true,
+      "description": "Verify Docker socket is mounted from host"
+    }
+  },
+  "containerEnv": {
+    "HOST_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
+  },
+  "mounts": [
+    {
+      "type": "bind",
+      "source": "/var/run/docker.sock",
+      "target": "/var/run/docker.sock"
+    }
+  ],
+  "entrypoint": "",
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/docker-from-docker"
+  ]
+}

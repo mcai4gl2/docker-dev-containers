@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DevDocker Configuration",
+  "description": "Configuration file for DevDocker tasks. Place devdocker.json in any project directory to define Docker-based development tasks.",
+  "type": "object",
+  "required": ["tasks"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference"
+    },
+    "tasks": {
+      "type": "array",
+      "description": "List of Docker tasks",
+      "items": {
+        "type": "object",
+        "required": ["name", "image"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Task display name"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["exec", "shell"],
+            "default": "exec",
+            "description": "Task type: 'exec' runs a command and exits, 'shell' opens an interactive terminal"
+          },
+          "image": {
+            "type": "string",
+            "description": "Docker image name (subdirectory name under the docker/ directory)"
+          },
+          "command": {
+            "type": "string",
+            "description": "Command to execute in the container (required for exec tasks)"
+          },
+          "description": {
+            "type": "string",
+            "default": "",
+            "description": "Task description shown in the UI"
+          },
+          "network_mode": {
+            "type": "string",
+            "enum": ["host", "bridge", "none"],
+            "description": "Docker network mode. Overrides the default from settings."
+          },
+          "volumes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Volume mounts. Supports {project_root} and {workspaceFolder} placeholders. Overrides the default from settings."
+          },
+          "working_dir": {
+            "type": "string",
+            "description": "Container working directory. Overrides the default from settings."
+          },
+          "run_as_user": {
+            "type": "boolean",
+            "description": "Run as current user (uid:gid). Overrides the default from settings."
+          },
+          "env": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Environment variables. ${VAR} references are resolved from host environment."
+          },
+          "ports": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^\\d+:\\d+$"
+            },
+            "description": "Port mappings (only used when network_mode is not 'host')"
+          }
+        },
+        "if": {
+          "properties": {
+            "type": {
+              "const": "exec"
+            }
+          }
+        },
+        "then": {
+          "required": ["command"]
+        }
+      }
+    }
+  }
+}

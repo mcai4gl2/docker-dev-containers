@@ -1,0 +1,358 @@
+{
+  "name": "devdocker",
+  "displayName": "DevDocker - Docker Development Tools",
+  "description": "Define, build, and run Docker-based development tool containers directly from VS Code. Drop a Dockerfile, add a devdocker.json, and go.",
+  "version": "0.3.0",
+  "publisher": "devdocker",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "workspaceContains:**/Dockerfile",
+    "workspaceContains:**/devdocker.json"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "devdocker.buildAll",
+        "title": "DevDocker: Build All Images",
+        "icon": "$(package)"
+      },
+      {
+        "command": "devdocker.buildImage",
+        "title": "DevDocker: Build Image",
+        "icon": "$(package)"
+      },
+      {
+        "command": "devdocker.shell",
+        "title": "DevDocker: Open Shell",
+        "icon": "$(terminal)"
+      },
+      {
+        "command": "devdocker.exec",
+        "title": "DevDocker: Run Command",
+        "icon": "$(play)"
+      },
+      {
+        "command": "devdocker.runTask",
+        "title": "DevDocker: Run Task",
+        "icon": "$(play)"
+      },
+      {
+        "command": "devdocker.runTaskByName",
+        "title": "DevDocker: Run Task By Name"
+      },
+      {
+        "command": "devdocker.buildImageByName",
+        "title": "DevDocker: Build Image By Name"
+      },
+      {
+        "command": "devdocker.refresh",
+        "title": "DevDocker: Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "devdocker.showRunningContainers",
+        "title": "DevDocker: Show Running Containers"
+      },
+      {
+        "command": "devdocker.copyImageTag",
+        "title": "Copy Image Tag",
+        "icon": "$(copy)"
+      },
+      {
+        "command": "devdocker.openShellForImage",
+        "title": "Open Shell",
+        "icon": "$(terminal)"
+      },
+      {
+        "command": "devdocker.buildImageFromTree",
+        "title": "Build Image",
+        "icon": "$(package)"
+      },
+      {
+        "command": "devdocker.rebuildImage",
+        "title": "Rebuild Image",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "devdocker.runTaskFromTree",
+        "title": "Run",
+        "icon": "$(play)"
+      },
+      {
+        "command": "devdocker.openShellFromTree",
+        "title": "Open Shell",
+        "icon": "$(terminal)"
+      },
+      {
+        "command": "devdocker.editDevDockerJson",
+        "title": "Edit devdocker.json",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "devdocker.copyCommand",
+        "title": "Copy Command",
+        "icon": "$(copy)"
+      },
+      {
+        "command": "devdocker.openTerminalProfile",
+        "title": "DevDocker: Open Container Terminal"
+      },
+      {
+        "command": "devdocker.createConfig",
+        "title": "DevDocker: Create devdocker.json",
+        "icon": "$(new-file)"
+      },
+      {
+        "command": "devdocker.createImage",
+        "title": "DevDocker: Create Docker Image",
+        "icon": "$(new-folder)"
+      }
+    ],
+    "taskDefinitions": [
+      {
+        "type": "devdocker",
+        "required": [
+          "image"
+        ],
+        "properties": {
+          "image": {
+            "type": "string",
+            "description": "Docker image name (subdirectory under docker/)"
+          },
+          "command": {
+            "type": "string",
+            "description": "Command to execute (exec mode)"
+          },
+          "taskType": {
+            "type": "string",
+            "enum": [
+              "exec",
+              "shell"
+            ],
+            "default": "exec",
+            "description": "Task type: exec or shell"
+          },
+          "networkMode": {
+            "type": "string",
+            "enum": [
+              "host",
+              "bridge",
+              "none"
+            ],
+            "description": "Docker network mode override"
+          }
+        }
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "devdocker",
+          "title": "DevDocker",
+          "icon": "$(server-process)"
+        }
+      ]
+    },
+    "views": {
+      "devdocker": [
+        {
+          "id": "devdocker.imagesView",
+          "name": "Images"
+        },
+        {
+          "id": "devdocker.tasksView",
+          "name": "Tasks"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "devdocker.imagesView",
+        "contents": "No Docker images found.\nPlace Dockerfiles in a docker/ subdirectory.\n[Refresh](command:devdocker.refresh)"
+      },
+      {
+        "view": "devdocker.tasksView",
+        "contents": "No tasks found.\nAdd a devdocker.json file to define tasks.\n[Refresh](command:devdocker.refresh)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "devdocker.buildAll",
+          "when": "view == devdocker.imagesView",
+          "group": "navigation"
+        },
+        {
+          "command": "devdocker.refresh",
+          "when": "view == devdocker.imagesView || view == devdocker.tasksView",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "devdocker.buildImageFromTree",
+          "when": "viewItem == devdocker-image || viewItem == devdocker-image-base",
+          "group": "1_build@1"
+        },
+        {
+          "command": "devdocker.rebuildImage",
+          "when": "viewItem == devdocker-image || viewItem == devdocker-image-base",
+          "group": "1_build@2"
+        },
+        {
+          "command": "devdocker.openShellForImage",
+          "when": "viewItem == devdocker-image",
+          "group": "2_run@1"
+        },
+        {
+          "command": "devdocker.copyImageTag",
+          "when": "viewItem == devdocker-image || viewItem == devdocker-image-base",
+          "group": "3_other@1"
+        },
+        {
+          "command": "devdocker.runTaskFromTree",
+          "when": "viewItem == devdocker-task-exec || viewItem == devdocker-task-shell",
+          "group": "1_run@1"
+        },
+        {
+          "command": "devdocker.openShellFromTree",
+          "when": "viewItem == devdocker-task-exec || viewItem == devdocker-task-shell",
+          "group": "1_run@2"
+        },
+        {
+          "command": "devdocker.editDevDockerJson",
+          "when": "viewItem == devdocker-task-exec || viewItem == devdocker-task-shell || viewItem == devdocker-task-group",
+          "group": "2_edit@1"
+        },
+        {
+          "command": "devdocker.copyCommand",
+          "when": "viewItem == devdocker-task-exec",
+          "group": "3_other@1"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "DevDocker",
+      "properties": {
+        "devdocker.dockerDirectory": {
+          "type": "string",
+          "default": "docker",
+          "description": "Path to docker images directory (relative to workspace root)"
+        },
+        "devdocker.defaults.networkMode": {
+          "type": "string",
+          "enum": [
+            "host",
+            "bridge",
+            "none"
+          ],
+          "default": "host",
+          "description": "Docker network mode"
+        },
+        "devdocker.defaults.runAsUser": {
+          "type": "boolean",
+          "default": true,
+          "description": "Run containers as current user (uid:gid)"
+        },
+        "devdocker.defaults.volumes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "{workspaceFolder}:/workspace"
+          ],
+          "description": "Default volume mounts"
+        },
+        "devdocker.defaults.workingDir": {
+          "type": "string",
+          "default": "/workspace",
+          "description": "Container working directory"
+        },
+        "devdocker.defaults.ports": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Default port mappings"
+        },
+        "devdocker.imagePrefix": {
+          "type": "string",
+          "default": "",
+          "description": "Image tag prefix (defaults to workspace folder name if empty)"
+        },
+        "devdocker.ghcrRegistry": {
+          "type": "string",
+          "default": "",
+          "description": "GHCR registry path for cache-from support (e.g., ghcr.io/owner/repo/tools)"
+        }
+      }
+    },
+    "jsonValidation": [
+      {
+        "fileMatch": "devdocker.json",
+        "url": "./schemas/devdocker.schema.json"
+      }
+    ],
+    "problemMatchers": [
+      {
+        "name": "devdocker-build",
+        "label": "DevDocker Build",
+        "owner": "devdocker",
+        "source": "devdocker",
+        "fileLocation": "absolute",
+        "pattern": {
+          "regexp": "^(ERROR|error):\\s+(.+?):(\\d+):(\\d+):\\s+(.+)$",
+          "file": 2,
+          "line": 3,
+          "column": 4,
+          "message": 5
+        }
+      },
+      {
+        "name": "devdocker-exec",
+        "label": "DevDocker Exec",
+        "owner": "devdocker",
+        "source": "devdocker",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}"
+        ],
+        "pattern": {
+          "regexp": "^(.+?):(\\d+)(?::(\\d+))?:\\s+(error|warning|info):\\s+(.+)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts",
+    "test:unit": "TS_NODE_PROJECT=tsconfig.test.json mocha",
+    "test": "npm run test:unit"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.56.0",
+    "mocha": "^11.7.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.0"
+  }
+}
