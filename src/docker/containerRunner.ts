@@ -14,7 +14,7 @@ import { ResolvedContainerSettings, mergeTaskSettings, getDefaultContainerSettin
 import { resolveVolumePlaceholders, resolvePlaceholders } from '../utils/placeholder';
 import { getUidGid } from '../utils/platform';
 import { isInDevcontainer, getDevcontainerInfo, adjustVolumeForDevcontainer } from './devcontainer';
-import { runDockerCommand, isDockerAvailable } from './dockerClient';
+import { runDockerCommand, isDockerAvailable, getDockerEnv } from './dockerClient';
 import { ensureImageBuilt } from './imageBuilder';
 
 /**
@@ -157,6 +157,7 @@ export async function shellInContainer(
     name: terminalName ?? `DevDocker: ${image.name}`,
     shellPath: 'docker',
     shellArgs: args,
+    env: getDockerEnv(),
   });
 
   terminal.show();

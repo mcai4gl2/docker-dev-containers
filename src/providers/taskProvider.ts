@@ -9,6 +9,7 @@
 import * as vscode from 'vscode';
 import { DockerImage } from '../discovery/imageDiscovery';
 import { DevDockerTaskWithSource } from '../discovery/taskDiscovery';
+import { getDockerEnv } from '../docker/dockerClient';
 
 /**
  * Task definition for tasks.json manual customization.
@@ -122,7 +123,9 @@ export class DevDockerTaskProvider implements vscode.TaskProvider {
       vscode.TaskScope.Workspace,
       `Build ${image.name}`,
       'DevDocker',
-      new vscode.ShellExecution(`docker build -t ${image.tag} ${image.path}`),
+      new vscode.ShellExecution(`docker build -t ${image.tag} ${image.path}`, {
+        env: getDockerEnv(),
+      }),
     );
     task.group = vscode.TaskGroup.Build;
     task.detail = image.description;
@@ -161,6 +164,7 @@ export class DevDockerTaskProvider implements vscode.TaskProvider {
       // Build a real docker run command for exec tasks
       execution = new vscode.ShellExecution(
         this.buildDockerRunShellCommand(ddTask),
+        { env: getDockerEnv() },
       );
     } else {
       // Shell tasks dispatch through the command
@@ -211,6 +215,7 @@ export class DevDockerTaskProvider implements vscode.TaskProvider {
       'DevDocker',
       new vscode.ShellExecution(
         `docker run --rm ${networkFlag} -w /workspace -v "\${workspaceFolder}:/workspace" ${image.tag} sh -c '${cmd.replace(/'/g, "'\\''")}'`,
+        { env: getDockerEnv() },
       ),
     );
     resolved.detail = `Run: ${cmd}`;

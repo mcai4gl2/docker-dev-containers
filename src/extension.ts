@@ -11,7 +11,7 @@ import * as path from 'path';
 import { discoverDockerImages, DockerImage } from './discovery/imageDiscovery';
 import { getAllDockerTasks, DevDockerTaskWithSource, discoverDevDockerConfigs } from './discovery/taskDiscovery';
 import { createFileWatchers } from './discovery/fileWatcher';
-import { isDockerAvailable } from './docker/dockerClient';
+import { isDockerAvailable, getDockerEnv } from './docker/dockerClient';
 import { buildAllImages, buildImageWithDependencies } from './docker/imageBuilder';
 import { execInContainer, shellInContainer, runTask } from './docker/containerRunner';
 import { getDefaultContainerSettings } from './config/merger';
@@ -481,6 +481,7 @@ export function activate(context: vscode.ExtensionContext): void {
         name: imageDisplayName(picked.image.name),
         shellPath: 'docker',
         shellArgs: args,
+        env: getDockerEnv(),
       });
       terminal.show();
     }),

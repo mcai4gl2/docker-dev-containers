@@ -245,6 +245,11 @@
     "configuration": {
       "title": "DevDocker",
       "properties": {
+        "devdocker.dockerHost": {
+          "type": "string",
+          "default": "",
+          "description": "Docker host URL (e.g., npipe:////./pipe/docker_engine on Windows, unix:///var/run/docker.sock on Linux). Leave empty to use default."
+        },
         "devdocker.dockerDirectory": {
           "type": "string",
           "default": "docker",
